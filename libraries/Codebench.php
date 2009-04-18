@@ -91,7 +91,7 @@ abstract class Codebench_Core {
 				Benchmark::start($method.$subject_key);
 
 				// The heavy work
-				for ($i = 0; $i < $this->loops; $i++)
+				for ($i = 0; $i < $this->loops; ++$i)
 				{
 					$return = $this->$method($subject);
 				}
