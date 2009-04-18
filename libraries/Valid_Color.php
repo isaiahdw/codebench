@@ -4,7 +4,14 @@
  */
 class Valid_Color extends Codebench {
 
-	public $description = "Optimization for <code>valid::color()</code>\nSee: http://forum.kohanaphp.com/comments.php?DiscussionID=2192.";
+	public $description =
+		'Optimization for <code>valid::color()</code>.
+		See: http://forum.kohanaphp.com/comments.php?DiscussionID=2192.
+
+		Note that the methods with an “_invalid” suffix contain flawed regexes and should be
+		completely discarded. I left them in here for educational purposes, and to remind myself
+		to think harder and test more thoroughly. It can\'t be that I only found out so late in
+		the game. For the regex explanation have a look at the forum topic mentioned earlier.';
 
 	public $loops = 10000;
 
@@ -27,7 +34,7 @@ class Valid_Color extends Codebench {
 
 	// Note that I added the D modifier to corey's regexes. We need to match exactly
 	// the same if we want the benchmarks to be of any value.
-	public function bench_corey_regex_1($subject)
+	public function bench_corey_regex_1_invalid($subject)
 	{
 		return (bool) preg_match('/^#?([0-9a-f]{1,2}){3}$/iD', $subject);
 	}
@@ -39,7 +46,7 @@ class Valid_Color extends Codebench {
 
 	// Optimized corey_regex_1
 	// Using non-capturing parentheses and a possessive interval
-	public function bench_geert_regex_1a($subject)
+	public function bench_geert_regex_1a_invalid($subject)
 	{
 		return (bool) preg_match('/^#?(?:[0-9a-f]{1,2}+){3}$/iD', $subject);
 	}
@@ -53,7 +60,7 @@ class Valid_Color extends Codebench {
 
 	// Optimized geert_regex_1a
 	// Possessive "#"
-	public function bench_geert_regex_1b($subject)
+	public function bench_geert_regex_1b_invalid($subject)
 	{
 		return (bool) preg_match('/^#?+(?:[0-9a-f]{1,2}+){3}$/iD', $subject);
 	}
@@ -74,6 +81,6 @@ class Valid_Color extends Codebench {
 		}
 
 		$strlen = strlen($subject);
-		return (($strlen !== 3 AND $strlen !== 6) OR ! ctype_xdigit($subject));
+		return (($strlen === 3 OR $strlen === 6) AND ctype_xdigit($subject));
 	}
 }
