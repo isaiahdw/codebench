@@ -84,6 +84,10 @@ abstract class Codebench_Core {
 			// Initialize benchmark output for this method
 			$codebench['benchmarks'][$method] = array('time' => 0, 'memory' => 0);
 
+			// Using Reflection because simply calling $this->$method($subject) in the loop below
+			// results in buggy benchmark times correlating to the length of the method name.
+			$reflection = new ReflectionMethod(get_class($this), $method);
+
 			// Benchmark each subject on each method
 			foreach ($this->subjects as $subject_key => $subject)
 			{
@@ -93,7 +97,7 @@ abstract class Codebench_Core {
 				// The heavy work
 				for ($i = 0; $i < $this->loops; ++$i)
 				{
-					$return = $this->$method($subject);
+					$return = $reflection->invoke($this, $subject);
 				}
 
 				// Stop and read the timer
