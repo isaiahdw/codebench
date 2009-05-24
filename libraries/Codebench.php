@@ -91,13 +91,18 @@ abstract class Codebench_Core {
 			// Benchmark each subject on each method
 			foreach ($this->subjects as $subject_key => $subject)
 			{
+				// Prerun each method/subject combo before the actual benchmark loop.
+				// This way relatively expensive initial processes won't be benchmarked, e.g. autoloading.
+				// At the same time we capture the return here so we don't have to do that in the loop anymore.
+				$return = $reflection->invoke($this, $subject);
+
 				// Start the timer for one subject
 				Benchmark::start($method.$subject_key);
 
 				// The heavy work
 				for ($i = 0; $i < $this->loops; ++$i)
 				{
-					$return = $reflection->invoke($this, $subject);
+					$reflection->invoke($this, $subject);
 				}
 
 				// Stop and read the timer
